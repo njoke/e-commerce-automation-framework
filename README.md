@@ -13,8 +13,8 @@ Quality Assurance Engineering project demonstrating end-to-end test automation o
 
 | Service | URL |
 |---|---|
-| Frontend (Vercel) | _Deploy to update_ |
-| Backend API (Render) | _Deploy to update_ |
+| Frontend (Vercel) | https://e-commerce-automation-framework.vercel.app|
+| Backend API (Render) | https://amplifii-backend.onrender.com/api/health|
 
 > Note: Backend on Render free tier — may take ~30s to wake after inactivity (cold start). Expected behavior.
 
