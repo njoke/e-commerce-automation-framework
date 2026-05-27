@@ -1,0 +1,22 @@
+{
+  "valid": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jane@example.com",
+    "address": "123 Elm Street",
+    "city": "Seattle",
+    "state": "WA",
+    "zip": "98101",
+    "cardNumber": "4111111111111111"
+  },
+  "missing_email": {
+    "firstName": "John",
+    "lastName": "Smith",
+    "email": "",
+    "address": "456 Oak Avenue",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97201",
+    "cardNumber": "4111111111111111"
+  }
+}

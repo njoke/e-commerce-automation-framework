@@ -1,0 +1,23 @@
+[
+  {
+    "id": "user-001",
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "role": "standard",
+    "locked": false
+  },
+  {
+    "id": "user-002",
+    "username": "locked_user",
+    "password": "secret_sauce",
+    "role": "standard",
+    "locked": true
+  },
+  {
+    "id": "user-003",
+    "username": "admin_user",
+    "password": "admin_sauce",
+    "role": "admin",
+    "locked": false
+  }
+]

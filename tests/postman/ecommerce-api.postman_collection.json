@@ -1,0 +1,666 @@
+{
+  "info": {
+    "name": "Amplifii E-Commerce API",
+    "description": "Full API test suite for Amplifii Electronics backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /api/health - Returns 200 ok",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Body has status ok', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.status).to.equal('ok');",
+                  "});",
+                  "pm.test('Body has timestamp', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.timestamp).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/login - Valid credentials",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"{{validUsername}}\", \"password\": \"{{validPassword}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns userId, username, token', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.include.all.keys('userId', 'username', 'token');",
+                  "});",
+                  "pm.test('Token is a string', () => {",
+                  "  pm.expect(pm.response.json().token).to.be.a('string');",
+                  "});",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('userId', json.userId);",
+                  "pm.environment.set('token', json.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/login - Invalid password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"{{validUsername}}\", \"password\": \"wrong_password\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Returns error message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/login - Locked user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"{{lockedUsername}}\", \"password\": \"{{lockedPassword}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Returns locked error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.include('locked');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/login - Missing fields",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Returns validation error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/login - Unknown username",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"no_such_user\", \"password\": \"secret_sauce\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Returns error', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET /api/products - Returns all products",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response is array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('Array is not empty', () => {",
+                  "  pm.expect(pm.response.json().length).to.be.greaterThan(0);",
+                  "});",
+                  "pm.test('Each product has required fields', () => {",
+                  "  pm.response.json().forEach(p => {",
+                  "    pm.expect(p).to.have.all.keys('id', 'name', 'description', 'category', 'price', 'imageUrl', 'inStock', 'rating');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products?search=headphone",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?search=headphone"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns filtered results', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.be.an('array');",
+                  "  pm.expect(json.length).to.be.greaterThan(0);",
+                  "  json.forEach(p => {",
+                  "    pm.expect(p.name.toLowerCase() + p.description.toLowerCase() + p.category.toLowerCase()).to.include('headphone');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products?sort=price_asc",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?sort=price_asc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Products sorted price ascending', () => {",
+                  "  const prices = pm.response.json().map(p => p.price);",
+                  "  for (let i = 1; i < prices.length; i++) {",
+                  "    pm.expect(prices[i]).to.be.at.least(prices[i - 1]);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products?sort=price_desc",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?sort=price_desc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Products sorted price descending', () => {",
+                  "  const prices = pm.response.json().map(p => p.price);",
+                  "  for (let i = 1; i < prices.length; i++) {",
+                  "    pm.expect(prices[i]).to.be.at.most(prices[i - 1]);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products?category=earbuds",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?category=earbuds"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All results match category', () => {",
+                  "  pm.response.json().forEach(p => {",
+                  "    pm.expect(p.category).to.equal('earbuds');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products/:id - Valid product",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/{{productId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns single product', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.id).to.equal(pm.environment.get('productId'));",
+                  "  pm.expect(json.name).to.be.a('string');",
+                  "  pm.expect(json.price).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/products/:id - Invalid product 404",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/{{invalidProductId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Returns error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "POST /api/cart - Add item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"{{productId}}\", \"quantity\": 1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Returns cart array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('Cart contains the added product', () => {",
+                  "  const cart = pm.response.json();",
+                  "  const item = cart.find(i => i.productId === pm.environment.get('productId'));",
+                  "  pm.expect(item).to.not.be.undefined;",
+                  "  pm.environment.set('cartItemId', item.itemId);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/cart - Get user cart",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-user-id", "value": "{{userId}}" }],
+            "url": "{{baseUrl}}/api/cart"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('Cart has items', () => {",
+                  "  pm.expect(pm.response.json().length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /api/cart/:itemId - Update quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/cart/{{cartItemId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"quantity\": 3}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Updated quantity is 3', () => {",
+                  "  pm.expect(pm.response.json().quantity).to.equal(3);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /api/cart/:itemId - Invalid quantity 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/cart/{{cartItemId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"quantity\": 0}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Returns error', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/cart - Add non-existent product 404",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"prod-999\", \"quantity\": 1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Returns error', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/cart/:itemId - Remove item",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-user-id", "value": "{{userId}}" }],
+            "url": "{{baseUrl}}/api/cart/{{cartItemId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns success message', () => {",
+                  "  pm.expect(pm.response.json().message).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "POST /api/cart - Re-add item for checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"{{productId}}\", \"quantity\": 1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/checkout - Valid checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/checkout",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"userId\": \"{{userId}}\", \"firstName\": \"Jane\", \"lastName\": \"Doe\", \"email\": \"jane@example.com\", \"address\": \"123 Elm St\", \"city\": \"Seattle\", \"state\": \"WA\", \"zip\": \"98101\", \"cardNumber\": \"4111111111111111\", \"items\": [{\"productId\": \"prod-001\", \"quantity\": 1, \"price\": 299.99}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Returns orderId', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.orderId).to.be.a('string');",
+                  "  pm.expect(json.orderId).to.include('ORD');",
+                  "});",
+                  "pm.test('Returns subtotal, tax, total', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.subtotal).to.be.a('number');",
+                  "  pm.expect(json.tax).to.be.a('number');",
+                  "  pm.expect(json.total).to.be.a('number');",
+                  "  pm.expect(json.total).to.equal(json.subtotal + json.tax);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/checkout - Empty cart 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/checkout",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"userId\": \"{{userId}}\", \"firstName\": \"Jane\", \"lastName\": \"Doe\", \"email\": \"jane@example.com\", \"address\": \"123 Elm St\", \"city\": \"Seattle\", \"state\": \"WA\", \"zip\": \"98101\", \"cardNumber\": \"4111111111111111\", \"items\": []}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Returns error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/checkout - Missing email 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-user-id", "value": "{{userId}}" }
+            ],
+            "url": "{{baseUrl}}/api/checkout",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"userId\": \"{{userId}}\", \"firstName\": \"Jane\", \"lastName\": \"Doe\", \"email\": \"\", \"address\": \"123 Elm St\", \"city\": \"Seattle\", \"state\": \"WA\", \"zip\": \"98101\", \"cardNumber\": \"4111111111111111\", \"items\": [{\"productId\": \"prod-001\", \"quantity\": 1, \"price\": 299.99}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Returns error', () => {",
+                  "  pm.expect(pm.response.json().error).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/orders - Get user orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-user-id", "value": "{{userId}}" }],
+            "url": "{{baseUrl}}/api/orders"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('Orders have required fields', () => {",
+                  "  const orders = pm.response.json();",
+                  "  if (orders.length > 0) {",
+                  "    pm.expect(orders[0]).to.have.all.keys('orderId', 'userId', 'items', 'subtotal', 'tax', 'total', 'createdAt');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

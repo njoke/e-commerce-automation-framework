@@ -1,0 +1,31 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Build outputs
+frontend/dist/
+frontend/.vite/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+*.env
+
+# Test reports (keep folders, ignore generated files)
+reports/playwright/*.html
+reports/postman/*.html
+reports/k6/*.json
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

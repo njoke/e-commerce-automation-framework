@@ -1,0 +1,26 @@
+[
+  {
+    "id": "prod-001",
+    "name": "Amplifii X1 Pro Headphones",
+    "category": "headphones",
+    "price": 299.99
+  },
+  {
+    "id": "prod-002",
+    "name": "SoundPod Neo Earbuds",
+    "category": "earbuds",
+    "price": 149.99
+  },
+  {
+    "id": "prod-003",
+    "name": "BoomWave 360 Speaker",
+    "category": "speakers",
+    "price": 199.99
+  },
+  {
+    "id": "prod-004",
+    "name": "ClearVox Studio Mic",
+    "category": "microphones",
+    "price": 89.99
+  }
+]

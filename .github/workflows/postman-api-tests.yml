@@ -1,0 +1,25 @@
+name: Postman API Tests
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  postman:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install -g newman newman-reporter-htmlextra
+      - run: cd backend && npm install && npm start &
+      - run: sleep 5
+      - run: |
+          newman run tests/postman/ecommerce-api.postman_collection.json \
+            -e tests/postman/ecommerce-local.postman_environment.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export reports/postman/report.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postman-report
+          path: reports/postman/

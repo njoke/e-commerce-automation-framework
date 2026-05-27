@@ -1,0 +1,32 @@
+name: Playwright Python Tests
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Start backend
+        run: cd backend && npm install && npm start &
+      - name: Build and serve frontend
+        run: cd frontend && npm install && npm run build && npx serve dist -p 5173 &
+      - name: Install Python deps and browsers
+        run: |
+          cd tests/playwright-python
+          uv sync
+          uv run playwright install --with-deps
+      - name: Run smoke tests
+        run: cd tests/playwright-python && uv run pytest specs/test_smoke.py -v
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots
+          path: reports/screenshots/
