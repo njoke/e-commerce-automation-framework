@@ -2,10 +2,10 @@
 
 Quality Assurance Engineering project demonstrating end-to-end test automation on an e-commerce application — covering UI automation, API testing, AI-assisted testing, accessibility auditing, performance testing, and CI/CD.
 
-![Frontend Quality](https://github.com/YOUR_USERNAME/e-commerce-automation-framework/actions/workflows/frontend-quality.yml/badge.svg)
-![Playwright Tests](https://github.com/YOUR_USERNAME/e-commerce-automation-framework/actions/workflows/playwright-python.yml/badge.svg)
-![Postman API Tests](https://github.com/YOUR_USERNAME/e-commerce-automation-framework/actions/workflows/postman-api-tests.yml/badge.svg)
-![k6 Performance](https://github.com/YOUR_USERNAME/e-commerce-automation-framework/actions/workflows/k6-performance.yml/badge.svg)
+![Frontend Quality](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/frontend-quality.yml/badge.svg)
+![Playwright Tests](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/playwright-python.yml/badge.svg)
+![Postman API Tests](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/postman-api-tests.yml/badge.svg)
+![k6 Performance](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/k6-performance.yml/badge.svg)
 
 ---
 
@@ -41,7 +41,7 @@ Quality Assurance Engineering project demonstrating end-to-end test automation o
 ## Quick Start — Docker (Recommended)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/e-commerce-automation-framework.git
+git clone https://github.com/njoke/e-commerce-automation-framework.git
 cd e-commerce-automation-framework
 cp frontend/.env.example frontend/.env
 docker compose up --build
