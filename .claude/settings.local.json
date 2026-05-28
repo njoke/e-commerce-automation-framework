@@ -11,7 +11,8 @@
       "Bash(k6 version:*)",
       "Bash(brew install:*)",
       "Bash(k6 run:*)",
-      "Bash(ls /Volumes/Mac_Work/Ken_Mac_Storage/Projects/projects/e-commerce-automation-framework/frontend/.env*)"
+      "Bash(ls /Volumes/Mac_Work/Ken_Mac_Storage/Projects/projects/e-commerce-automation-framework/frontend/.env*)",
+      "Bash(git push:*)"
     ]
   }
 }
