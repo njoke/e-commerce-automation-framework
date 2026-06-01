@@ -1,6 +1,6 @@
 # Amplifii Electronics — Full-Stack E-Commerce QA Automation Framework
 
-Quality Assurance Engineering project demonstrating end-to-end test automation on an e-commerce application — covering UI automation, API testing, AI-assisted testing, accessibility auditing, performance testing, and CI/CD.
+Quality Assurance Engineering project demonstrating end-to-end test automation on an e-commerce application, covering UI automation, API testing, AI-assisted testing, accessibility auditing, performance testing, and CI/CD.
 
 ![Frontend Quality](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/frontend-quality.yml/badge.svg)
 ![Playwright Tests](https://github.com/njoke/e-commerce-automation-framework/actions/workflows/playwright-python.yml/badge.svg)
